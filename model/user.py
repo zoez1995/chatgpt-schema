@@ -61,6 +61,7 @@ class ImageAttachment(Model):
     id: str
     size: int
     mimeType: str | None = None
+    mime_type: str | None = None
     width: int | None = None
     height: int | None = None
 

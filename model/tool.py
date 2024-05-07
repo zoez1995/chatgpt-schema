@@ -48,6 +48,7 @@ class BrowserDisplayContent(Model):
     result: str
     summary: str | None
     assets: Literal[[], None]  # type:ignore
+    tether_id: None = None
 
 
 class BrowserQuoteContent(Model):
@@ -56,6 +57,7 @@ class BrowserQuoteContent(Model):
     domain: str
     text: str
     title: str
+    tether_id: None = None
 
 
 class MultimodalTextContent(Model):
