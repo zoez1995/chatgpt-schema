@@ -60,9 +60,9 @@ class BrowserQuoteContent(Model):
     tether_id: None = None
 
 
-class MultimodalTextContent(Model):
+class ToolMultimodalTextContent(Model):
     content_type: Literal['multimodal_text']
-    parts: list[ImageContentPart]
+    parts: list[str | ImageContentPart]
 
 
 class ImageContentPart(Model):
@@ -81,7 +81,8 @@ Content = (
     | ExecutionOutputContent
     | BrowserDisplayContent
     | BrowserQuoteContent
-    | MultimodalTextContent
+    | ToolMultimodalTextContent
+    | ImageContentPart
 )
 
 
