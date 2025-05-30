@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Literal
+import pydantic as pyd
+from typing import Literal as Lit, Annotated
 from .config import Model
 
 
@@ -9,75 +10,103 @@ class UserMessage(Model):
     """
 
     id: str
+    role: Lit['user']
     author: Author
     create_time: float
     update_time: None
-    content: TextContent | MultimodalTextContent
-    status: Literal['finished_successfully']
+    content: Content
+    status: Lit['finished_successfully']
     end_turn: None
     weight: float
     metadata: Metadata
-    recipient: Literal['all']
+    recipient: Lit['all']
+    channel: None
 
 
 class Author(Model):
-    role: Literal['user']
+    role: Lit['user']
     name: None
-    metadata: Literal[{}]  # type:ignore
+    metadata: None
+
+
+type Content = Annotated[
+    TextContent | MultimodalTextContent | ImageContent,
+    pyd.Discriminator('content_type'),
+]
 
 
 class TextContent(Model):
-    content_type: Literal['text']
+    content_type: Lit['text']
     parts: list[str]
 
 
 class MultimodalTextContent(Model):
-    content_type: Literal['multimodal_text']
-    parts: list[str | ImageContentPart]
+    content_type: Lit['multimodal_text']
+    parts: list[str | ImageContent]
 
 
-class ImageContentPart(Model):
-    content_type: Literal['image_asset_pointer']
+class ImageContent(Model):
+    content_type: Lit['image_asset_pointer']
     asset_pointer: str
     size_bytes: int
     width: int
     height: int
     fovea: None
-    metadata: None
+    metadata: ImageMetadata | None
+
+
+class ImageMetadata(Model):
+    dalle: None
+    gizmo: None
+    generation: None
+    container_pixel_height: None
+    container_pixel_width: None
+    emu_omit_glimpse_image: None
+    emu_patches_override: None
+    sanitized: Lit[True]
+    asset_pointer_link: None
+    watermarked_asset_pointer: None
 
 
 class Metadata(Model):
     request_id: str | None = None
-    timestamp_: Literal['absolute']
+    timestamp_: Lit['absolute']
     message_type: None
-    attachments: list[ImageAttachment | TextFileAttachment | URL] | None = None
+    attachments: list[Attachment] | None = None
     targeted_reply: str | None = None
-    voice_mode_message: Literal[True] | None = None
+    voice_mode_message: Lit[True] | None = None
     gizmo_id: str | None = None
+    message_source: None = None
+    selected_sources: list[Lit['web']] | None = None
+    selected_github_repos: list[None] | None = None
+    serialization_metadata: SerializationMetadata | None = None
+    paragen_variants_info: ParagenVariantsInfo | None = None
+    paragen_variant_choice: str | None = None
+    caterpillar_selected_sources: list[Lit['web']] | None = None
+    system_hints: list[Lit['search']] | None = None
 
 
-class ImageAttachment(Model):
-    name: str
+class Attachment(Model):
     id: str
+    name: str
     size: int
-    mimeType: str | None = None
+    url: str | None = None
     mime_type: str | None = None
     width: int | None = None
     height: int | None = None
+    file_token_size: int | None = None
 
 
-class TextFileAttachment(Model):
-    name: str
-    id: str
-    size: int
-    mimeType: Literal['text/plain','application/pdf']
-    fileTokenSize: int
+class SerializationMetadata(Model):
+    custom_symbol_offsets: list[None]
 
-class URL(Model):
-    name: str
-    url: str
-    id: str
-    size: int
+
+class ParagenVariantsInfo(Model):
+    type: Lit['num_variants_in_stream']
+    num_variants_in_stream: int
+    display_treatment: Lit['skippable']
+    conversation_id: str
+
 
 # Keep at end of file
 UserMessage.model_rebuild()

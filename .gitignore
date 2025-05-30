@@ -1,8 +1,12 @@
 __pycache__/
 .python-version
 .DS_Store
+.venv
+.ruff_cache
+test.py
 
 # Data
+conversations.json
 *.json
 *.zip
 *.pkl

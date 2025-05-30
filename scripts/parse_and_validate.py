@@ -31,10 +31,6 @@ import json
 import pydantic
 from pydantic import BaseModel
 from model.conversation import Conversation
-from model.user import UserMessage
-from model.system import SystemMessage
-from model.assistant import AssistantMessage
-from model.tool import ToolMessage
 
 PATH_TO_CONVERSATIONS = 'conversations.json'
 # Set DISPLAY_FAILED_RECORD to False to disable printing the failed record and only see
@@ -43,32 +39,8 @@ DISPLAY_FAILED_RECORD = True
 
 
 def main():
-    with open(PATH_TO_CONVERSATIONS, 'r') as f:
+    with open('conversations.json', 'r') as f:
         conversations = json.load(f)
-
-    messages: dict[str, tuple[type[BaseModel], list[dict]]] = dict(
-        system=(SystemMessage, []),
-        user=(UserMessage, []),
-        assistant=(AssistantMessage, []),
-        tool=(ToolMessage, []),
-    )
-
-    # Sort the messages into their respective lists by role
-    for c in conversations:
-        for _, node in c['mapping'].items():
-            msg = node['message']
-            # Root nodes have no message
-            if not msg:
-                continue
-
-            role = msg['author']['role']
-            # Add the message to the list for the role
-            messages[role][1].append(msg)
-
-    # One role at a time, in order, validate all messages for that role
-    for role, (model, messages_for_role) in messages.items():
-        validate_model(model, messages_for_role)
-        print(f'{model.__name__} is valid for all {len(messages_for_role)} records.')
 
     # Since all messages are valid, now validate the conversations
     validate_model(Conversation, conversations)
