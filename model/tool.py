@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Literal as Lit, Annotated
 import pydantic as pyd
-from .config import Model, DefaultToolName, PluginName
+from .config import Model, DefaultToolName, ModelName, PluginName
 
 
 class ToolMessage(Model):
@@ -102,10 +102,10 @@ type Content = Annotated[
 
 class Metadata(Model):
     message_type: None
-    model_slug: str | None = None
+    model_slug: ModelName | None = None
     timestamp_: Lit['absolute']
-    default_model_slug: str | None = None
-    requested_model_slug: str | None = None
+    default_model_slug: ModelName | None = None
+    requested_model_slug: ModelName | None = None
     parent_id: str | None = None
     request_id: str | None = None
     is_complete: bool | None = None

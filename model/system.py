@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Literal as Lit
-from .config import Model
+from .config import Model, ModelName
 
 
 class SystemMessage(Model):
@@ -42,9 +42,9 @@ class Metadata(Model):
     rebase_developer_message: Lit[True] | None = None
     message_type: None = None
     message_source: None = None
-    model_slug: str | None = None
-    requested_model_slug: str | None = None
-    default_model_slug: str | None = None
+    model_slug: ModelName | None = None
+    requested_model_slug: ModelName | None = None
+    default_model_slug: ModelName | None = None
     parent_id: str | None = None
     request_id: str | None = None
     timestamp_: Lit['absolute'] | None = None

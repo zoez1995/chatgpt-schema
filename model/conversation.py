@@ -5,7 +5,7 @@ from .user import UserMessage
 from .assistant import AssistantMessage
 from .system import SystemMessage
 from .tool import ToolMessage
-from .config import Model
+from .config import Model, ModelName
 
 
 class Conversation(Model):
@@ -13,6 +13,7 @@ class Conversation(Model):
     An element in the `conversations.json` array of your ChatGPT export.
     """
 
+    id: str
     title: str
     create_time: float
     update_time: float
@@ -28,14 +29,13 @@ class Conversation(Model):
     is_starred: None
     safe_urls: list[str]
     blocked_urls: list[None]
-    default_model_slug: str | None
+    default_model_slug: ModelName | None
     conversation_origin: None
     voice: None
     async_status: int | None
     disabled_tool_ids: list[Lit['canmore']]
     is_do_not_remember: Lit[False] | None
     memory_scope: Lit['global_enabled']
-    id: str
 
     @pyd.model_validator(mode='before')
     @classmethod
@@ -71,7 +71,7 @@ class Node(Model):
         return value
 
 
-Message = Annotated[
+type Message = Annotated[
     UserMessage | AssistantMessage | SystemMessage | ToolMessage,
     pyd.Discriminator('role'),
 ]

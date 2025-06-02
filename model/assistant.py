@@ -5,7 +5,7 @@ Defines the structure of an assistant message.
 from __future__ import annotations
 from typing import Literal as Lit, Annotated
 import pydantic as pyd
-from .config import Model, DefaultToolName, PluginName
+from .config import Model, DefaultToolName, ModelName, PluginName
 from . import contentref
 
 
@@ -76,17 +76,17 @@ class AuthorMetadata(Model):
 
 
 class Metadata(Model):
-    model_slug: str
+    model_slug: ModelName
     message_type: None
     timestamp_: Lit['absolute']
     message_locale: str | None = None
-    default_model_slug: str | None = None
+    default_model_slug: ModelName | None = None
     pad: str | None = None
     parent_id: str | None = None
     request_id: str | None = None
     gizmo_id: str | None = None
     voice_mode_message: bool | None = None
-    requested_model_slug: str | None = None
+    requested_model_slug: ModelName | None = None
     reasoning_status: ReasoningStatus | None = None
     finished_duration_sec: int | None = None
     search_source: SearchSource | None = None

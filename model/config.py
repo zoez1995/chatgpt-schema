@@ -2,7 +2,7 @@
 Constants and configurations for the project.
 """
 
-from typing import Literal as Lit, get_args
+from typing import Literal as Lit
 from pydantic import BaseModel, ConfigDict
 
 
@@ -51,13 +51,44 @@ class Model(BaseModel):
 # PluginName = Lit[
 #     'AskTheCode.GetRepositoryStructure',
 # ]
-PluginName = str
+type PluginName = Lit[
+    'AskTheCode.GetRepositoryStructure',
+    'a8km123',
+    'canmore.create_textdoc',
+]
 
 
 # When ChatGPT gets a new default tool, put em here.
-DefaultToolName = Lit[
+type DefaultToolName = Lit[
     'python',
     'browser',
+    'bio',
+    'web',
+    'web.run',
     'dalle.text2im',
 ]
-default_tool_names = list(get_args(DefaultToolName))
+
+type ModelName = Lit[
+    'gpt-4',
+    'gpt-4-1',
+    'gpt-4-5',
+    'gpt-4-all-tools-hogwild-topk',
+    'gpt-4-browsing',
+    'gpt-4-code-interpreter',
+    'gpt-4-gizmo',
+    'gpt-4-mobile',
+    'gpt-4-plugins',
+    'gpt-4o',
+    'gpt-4o-mini',
+    'o1',
+    'o1-mini',
+    'o1-preview',
+    'o3',
+    'o3-mini',
+    'o3-mini-high',
+    'o4-mini-high',
+    'text-davinci-002-plugins',
+    'text-davinci-002-render',
+    'text-davinci-002-render-sha',
+    'text-davinci-002-render-sha-mobile',
+]
