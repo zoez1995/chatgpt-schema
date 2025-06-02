@@ -32,9 +32,7 @@ import pydantic
 from pydantic import BaseModel
 from model.conversation import Conversation
 
-PATH_TO_CONVERSATIONS = 'conversations.json'
-# Set DISPLAY_FAILED_RECORD to False to disable printing the failed record and only see
-# the error message.
+# Show the convo that failed validation
 DISPLAY_FAILED_RECORD = True
 
 
@@ -45,6 +43,10 @@ def main():
     # Since all messages are valid, now validate the conversations
     validate_model(Conversation, conversations)
     print(f'Conversation is valid for all {len(conversations)} records.')
+
+    result = [Conversation.model_validate(c).model_dump() for c in conversations]
+    with open('1-conversations-validated.json', 'w') as f:
+        json.dump(result, f)
 
 
 def validate_model(model: type[BaseModel], documents: list[dict]):

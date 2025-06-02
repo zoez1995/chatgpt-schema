@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Literal as Lit
+import pydantic as pyd
+from typing import Literal as Lit, Any
 from .config import Model, ModelName
 
 
@@ -9,28 +10,33 @@ class SystemMessage(Model):
     """
 
     id: str
+    parent: str
     role: Lit['system']
-    author: Author
+    name: None
+    author_metadata: None
     create_time: float | None
     update_time: None
-    content: Content
     status: Lit['finished_successfully']
     end_turn: bool | None
     weight: float
-    metadata: Metadata
     recipient: Lit['all']
     channel: None
-
-
-class Author(Model):
-    role: Lit['system']
-    name: None
-    metadata: None
+    content: Content
+    metadata: Metadata
+    children: list[str]
 
 
 class Content(Model):
     content_type: Lit['text']
-    parts: list[str]
+    text: str = pyd.Field(alias='parts')
+
+    @pyd.model_validator(mode='before')
+    @classmethod
+    def convert_parts(cls, obj: Any) -> Any:
+        if isinstance(obj, dict) and isinstance(obj.get('parts'), list):
+            assert len(obj['parts']) == 1
+            obj['parts'] = obj['parts'][0]
+        return obj
 
 
 class Metadata(Model):
