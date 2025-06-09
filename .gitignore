@@ -11,3 +11,4 @@ conversations.json
 *.zip
 *.pkl
 *.csv
+*.parquet
