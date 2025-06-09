@@ -45,7 +45,7 @@ class TextContent(Model):
 
 class CodeContent(Model):
     content_type: Lit['code']
-    language: str
+    language: Lit['unknown']
     text: str
     response_format_name: None
 
