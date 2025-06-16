@@ -17,7 +17,6 @@ class Conversation(Model):
     title: str
     create_time: float
     update_time: float
-    mapping: dict[str, Node]
     moderation_results: list[None]
     current_node: str
     plugin_ids: list[str] | None
@@ -36,6 +35,7 @@ class Conversation(Model):
     disabled_tool_ids: list[Lit['canmore']]
     is_do_not_remember: Lit[False] | None
     memory_scope: Lit['global_enabled']
+    mapping: dict[str, Node]
 
     @pyd.model_validator(mode='before')
     @classmethod
@@ -45,6 +45,47 @@ class Conversation(Model):
         This is useful for cleaning up the model before serialization.
         """
         return nullify_empty_dicts_rec(obj)
+
+    @pyd.field_validator('mapping', mode='before')
+    @classmethod
+    def flatten_message_nodes(cls, mapping: dict) -> Any:
+        assert mapping
+        first_node = next(iter(mapping.values()))
+
+        if not 'message' in first_node:
+            # Already flattened
+            return mapping
+
+        def flatten_message_node(node: dict) -> dict:
+            msg = node.pop('message')
+            if msg is None:
+                node['role'] = 'root'
+                return node
+
+            msg['id'] = node['id']
+            msg['parent'] = node['parent']
+            msg['children'] = node['children']
+
+            # Flatten author
+            assert 'role' not in msg
+            assert 'name' not in msg
+            assert 'author_metadata' not in msg
+            author = msg.pop('author')
+            assert author
+            msg['role'] = author['role']
+            msg['name'] = author['name']
+            msg['author_metadata'] = author['metadata']
+            return msg
+
+        return {
+            k: flatten_message_node(v) for k, v in mapping.items()
+        }
+
+    def get_root_node(self) -> RootNode:
+        for node in self.mapping.values():
+            if node.parent is None and node.role == 'root':
+                return node
+        raise ValueError("No root node found in the conversation mapping.")
 
 
 def nullify_empty_dicts_rec(obj: Any) -> Any:
@@ -57,22 +98,20 @@ def nullify_empty_dicts_rec(obj: Any) -> Any:
     return obj
 
 
-class Node(Model):
+class RootNode(Model):
     id: str
-    parent: str | None
-    message: Message | None
+    parent: None
+    role: Lit['root']
     children: list[str]
-
-    @pyd.field_validator('message', mode='before')
-    @classmethod
-    def set_message_role(cls, value: Any) -> Any:
-        if isinstance(value, dict):
-            value['role'] = value['author']['role']
-        return value
 
 
 type Message = Annotated[
     UserMessage | AssistantMessage | SystemMessage | ToolMessage,
+    pyd.Discriminator('role'),
+]
+
+type Node = Annotated[
+    RootNode | Message,
     pyd.Discriminator('role'),
 ]
 

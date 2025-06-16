@@ -4,6 +4,7 @@ __pycache__/
 .venv
 .ruff_cache
 test.py
+stream-raw.txt
 
 # Data
 conversations.json
@@ -11,3 +12,4 @@ conversations.json
 *.zip
 *.pkl
 *.csv
+*.parquet

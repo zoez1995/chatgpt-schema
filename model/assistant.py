@@ -3,7 +3,7 @@ Defines the structure of an assistant message.
 """
 
 from __future__ import annotations
-from typing import Literal as Lit, Annotated
+from typing import Any, Literal as Lit, Annotated
 import pydantic as pyd
 from .config import Model, DefaultToolName, ModelName, PluginName
 from . import contentref
@@ -15,17 +15,20 @@ class AssistantMessage(Model):
     """
 
     id: str
+    parent: str
     role: Lit['assistant']
-    author: Author
+    name: None
+    author_metadata: AuthorMetadata | None
     create_time: float
     update_time: None
-    content: Content
     status: Status
     end_turn: bool | None
     weight: float
-    metadata: Metadata
     recipient: Lit['all'] | DefaultToolName | PluginName
     channel: Lit['final', 'commentary'] | None
+    content: Content
+    metadata: Metadata
+    children: list[str]
 
 
 type Status = Lit['finished_successfully', 'in_progress', 'finished_partial_completion']
@@ -39,12 +42,20 @@ type Content = Annotated[
 
 class TextContent(Model):
     content_type: Lit['text']
-    parts: list[str]
+    text: str = pyd.Field(alias='parts')
+
+    @pyd.model_validator(mode='before')
+    @classmethod
+    def convert_parts(cls, obj: Any) -> Any:
+        if isinstance(obj, dict) and isinstance(obj.get('parts'), list):
+            assert len(obj['parts']) == 1
+            obj['parts'] = obj['parts'][0]
+        return obj
 
 
 class CodeContent(Model):
     content_type: Lit['code']
-    language: str
+    language: Lit['unknown', 'json']
     text: str
     response_format_name: None
 
@@ -57,18 +68,12 @@ class ThoughtsContent(Model):
 
 class ReasoningRecapContent(Model):
     content_type: Lit['reasoning_recap']
-    content: str
+    text: str = pyd.Field(alias='content')
 
 
 class Thought(Model):
     summary: str
-    content: str
-
-
-class Author(Model):
-    role: Lit['assistant']
-    name: None
-    metadata: AuthorMetadata | None
+    text: str = pyd.Field(alias='content')
 
 
 class AuthorMetadata(Model):

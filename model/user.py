@@ -1,6 +1,6 @@
 from __future__ import annotations
 import pydantic as pyd
-from typing import Literal as Lit, Annotated
+from typing import Any, Literal as Lit, Annotated
 from .config import Model
 
 
@@ -10,23 +10,20 @@ class UserMessage(Model):
     """
 
     id: str
+    parent: str
     role: Lit['user']
-    author: Author
+    name: None
+    author_metadata: None
     create_time: float
     update_time: None
-    content: Content
     status: Lit['finished_successfully']
     end_turn: None
     weight: float
-    metadata: Metadata
     recipient: Lit['all']
     channel: None
-
-
-class Author(Model):
-    role: Lit['user']
-    name: None
-    metadata: None
+    content: Content
+    metadata: Metadata
+    children: list[str]
 
 
 type Content = Annotated[
@@ -37,12 +34,36 @@ type Content = Annotated[
 
 class TextContent(Model):
     content_type: Lit['text']
-    parts: list[str]
+    text: str = pyd.Field(alias='parts')
+
+    @pyd.model_validator(mode='before')
+    @classmethod
+    def convert_parts(cls, obj: Any) -> Any:
+        if isinstance(obj, dict) and isinstance(obj.get('parts'), list):
+            assert len(obj['parts']) == 1
+            obj['parts'] = obj['parts'][0]
+        return obj
 
 
 class MultimodalTextContent(Model):
     content_type: Lit['multimodal_text']
-    parts: list[str | ImageContent]
+    parts: list[TextContentPart | ImageContent]
+
+    @pyd.field_validator('parts', mode='before')
+    @classmethod
+    def convert_text_parts(cls, parts: list) -> list:
+        if any([isinstance(part, str) for part in parts]):
+            # Convert string parts to TextContentPart
+            return [
+                {'content_type': 'text', 'text': part} if isinstance(part, str) else part
+                for part in parts
+            ]
+        return parts
+
+
+class TextContentPart(Model):
+    content_type: Lit['text']
+    text: str
 
 
 class ImageContent(Model):

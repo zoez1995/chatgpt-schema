@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Literal as Lit, Annotated
+from typing import Any, Literal as Lit, Annotated
 import pydantic as pyd
 from .config import Model, DefaultToolName, ModelName, PluginName
 
@@ -10,23 +10,20 @@ class ToolMessage(Model):
     """
 
     id: str
+    parent: str
     role: Lit['tool']
-    author: Author
+    name: DefaultToolName | PluginName
+    author_metadata: AuthorMetadata | None
     create_time: float
     update_time: float | None
-    content: Content
     status: Lit['finished_successfully', 'in_progress']
     end_turn: Lit[False] | None
     weight: float
-    metadata: Metadata
     recipient: Lit['all', 'assistant']
     channel: None
-
-
-class Author(Model):
-    role: Lit['tool']
-    name: DefaultToolName | PluginName
-    metadata: AuthorMetadata | None
+    content: Content
+    metadata: Metadata
+    children: list[str]
 
 
 class AuthorMetadata(Model):
@@ -35,12 +32,20 @@ class AuthorMetadata(Model):
 
 class TextContent(Model):
     content_type: Lit['text']
-    parts: list[str]
+    text: str = pyd.Field(alias='parts')
+
+    @pyd.model_validator(mode='before')
+    @classmethod
+    def convert_parts(cls, obj: Any) -> Any:
+        if isinstance(obj, dict) and isinstance(obj.get('parts'), list):
+            assert len(obj['parts']) == 1
+            obj['parts'] = obj['parts'][0]
+        return obj
 
 
 class CodeContent(Model):
     content_type: Lit['code']
-    language: str
+    language: Lit['unknown']
     text: str
     response_format_name: None
 
@@ -58,7 +63,7 @@ class ExecutionOutputContent(Model):
 
 class BrowserDisplayContent(Model):
     content_type: Lit['tether_browsing_display']
-    result: str
+    text: str = pyd.Field(alias='result')
     summary: str | None
     assets: Lit[[], None]  # type:ignore
     tether_id: None = None
@@ -75,7 +80,23 @@ class BrowserQuoteContent(Model):
 
 class MultimodalTextContent(Model):
     content_type: Lit['multimodal_text']
-    parts: list[str | ImageContentPart]
+    parts: list[TextContentPart | ImageContentPart]
+
+    @pyd.field_validator('parts', mode='before')
+    @classmethod
+    def convert_text_parts(cls, parts: list) -> list:
+        if any([isinstance(part, str) for part in parts]):
+            # Convert string parts to TextContentPart
+            return [
+                {'content_type': 'text', 'text': part} if isinstance(part, str) else part
+                for part in parts
+            ]
+        return parts
+
+
+class TextContentPart(Model):
+    content_type: Lit['text']
+    text: str
 
 
 class ImageContentPart(Model):
@@ -85,7 +106,29 @@ class ImageContentPart(Model):
     width: int
     height: int
     fovea: int | None = None
-    metadata: dict
+    metadata: ImageMetadata
+
+
+class ImageMetadata(Model):
+    dalle: Dalle
+    gizmo: None
+    generation: None
+    container_pixel_height: None
+    container_pixel_width: None
+    emu_omit_glimpse_image: None
+    emu_patches_override: None
+    sanitized: bool
+    asset_pointer_link: None
+    watermarked_asset_pointer: None
+
+
+class Dalle(Model):
+    gen_id: str
+    prompt: str
+    seed: int
+    parent_gen_id: None
+    edit_op: None
+    serialization_title: str
 
 
 type Content = Annotated[
