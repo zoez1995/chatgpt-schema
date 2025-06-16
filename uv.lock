@@ -81,12 +81,10 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "black" },
-    { name = "jsonpointer" },
     { name = "openai" },
     { name = "polars" },
     { name = "pydantic" },
     { name = "tiktoken" },
-    { name = "typejson" },
 ]
 
 [package.dev-dependencies]
@@ -99,12 +97,10 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "black", specifier = ">=25.1.0" },
-    { name = "jsonpointer", specifier = ">=3.0.0" },
     { name = "openai", specifier = ">=1.82.0" },
     { name = "polars", specifier = ">=1.30.0" },
     { name = "pydantic", specifier = ">=2.11.5" },
     { name = "tiktoken", specifier = ">=0.9.0" },
-    { name = "typejson", specifier = ">=1.0.1" },
 ]
 
 [package.metadata.requires-dev]
@@ -233,15 +229,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/d8/b3/2bd02071c5a2430d0b70403a34411fc519c2f227da7b03da9ba6a956f931/jiter-0.10.0-cp314-cp314-win32.whl", hash = "sha256:ac509f7eccca54b2a29daeb516fb95b6f0bd0d0d8084efaf8ed5dfc7b9f0b357", size = 210127, upload-time = "2025-05-18T19:04:38.837Z" },
     { url = "https://files.pythonhosted.org/packages/03/0c/5fe86614ea050c3ecd728ab4035534387cd41e7c1855ef6c031f1ca93e3f/jiter-0.10.0-cp314-cp314t-macosx_11_0_arm64.whl", hash = "sha256:5ed975b83a2b8639356151cef5c0d597c68376fc4922b45d0eb384ac058cfa00", size = 318527, upload-time = "2025-05-18T19:04:40.612Z" },
     { url = "https://files.pythonhosted.org/packages/b3/4a/4175a563579e884192ba6e81725fc0448b042024419be8d83aa8a80a3f44/jiter-0.10.0-cp314-cp314t-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3aa96f2abba33dc77f79b4cf791840230375f9534e5fac927ccceb58c5e604a5", size = 354213, upload-time = "2025-05-18T19:04:41.894Z" },
-]
-
-[[package]]
-name = "jsonpointer"
-version = "3.0.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/6a/0a/eebeb1fa92507ea94016a2a790b93c2ae41a7e18778f85471dc54475ed25/jsonpointer-3.0.0.tar.gz", hash = "sha256:2b2d729f2091522d61c3b31f82e11870f60b68f43fbc705cb76bf4b832af59ef", size = 9114, upload-time = "2024-06-10T19:24:42.462Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/71/92/5e77f98553e9e75130c78900d000368476aed74276eb8ae8796f65f00918/jsonpointer-3.0.0-py2.py3-none-any.whl", hash = "sha256:13e088adc14fca8b6aa8177c044e12701e6ad4b28ff10e65f2267a90109c9942", size = 7595, upload-time = "2024-06-10T19:24:40.698Z" },
 ]
 
 [[package]]
@@ -512,15 +499,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a8/4b/29b4ef32e036bb34e4ab51796dd745cdba7ed47ad142a9f4a1eb8e0c744d/tqdm-4.67.1.tar.gz", hash = "sha256:f8aef9c52c08c13a65f30ea34f4e5aac3fd1a34959879d7e59e63027286627f2", size = 169737, upload-time = "2024-11-24T20:12:22.481Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d0/30/dc54f88dd4a2b5dc8a0279bdd7270e735851848b762aeb1c1184ed1f6b14/tqdm-4.67.1-py3-none-any.whl", hash = "sha256:26445eca388f82e72884e0d580d5464cd801a3ea01e63e5601bdff9ba6a48de2", size = 78540, upload-time = "2024-11-24T20:12:19.698Z" },
-]
-
-[[package]]
-name = "typejson"
-version = "1.0.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/95/8a/2a81bd550ee7711a394d33bbe1d02bdc311c4328b28ddb6172262ff4605f/typejson-1.0.1.tar.gz", hash = "sha256:319fbbfde1c68ee6446b0118e01e77f03e1d6c6b1ff5ff25450436bbc2a7bced", size = 5346, upload-time = "2025-06-09T05:49:11.81Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/48/0f/5d99352010d926f51e1d3ac039faf3315143979babe3c7f1e420aafcd574/typejson-1.0.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:c85f7d261a9aba196f1e6522cf7428fd437c7860595dffdb3fbf5c344dd537e8", size = 205702, upload-time = "2025-06-09T05:49:10.674Z" },
 ]
 
 [[package]]
