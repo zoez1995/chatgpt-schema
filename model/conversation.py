@@ -23,18 +23,19 @@ class Conversation(Model):
     conversation_id: str
     conversation_template_id: str | None
     gizmo_id: str | None
-    gizmo_type: Lit['gpt'] | None
-    is_archived: Lit[False]
-    is_starred: None
+    gizmo_type: Lit['gpt', 'snorlax'] | None = None
+    is_archived: bool
+    is_starred: None = None
     safe_urls: list[str]
-    blocked_urls: list[None]
+    blocked_urls: list[None] = None
     default_model_slug: ModelName | None
-    conversation_origin: None
-    voice: None
-    async_status: int | None
-    disabled_tool_ids: list[Lit['canmore']]
-    is_do_not_remember: Lit[False] | None
-    memory_scope: Lit['global_enabled']
+    conversation_origin: None = None
+    voice: Lit['breeze','cove','maple','sol','ember','arbor','juniper','vale','spruce','glimmer'] | None = None
+    async_status: int | None = None
+    disabled_tool_ids: list[Lit['canmore']] = None
+    is_do_not_remember: Lit[False] | None = None
+    memory_scope: Lit['global_enabled'] = None
+    sugar_item_id: None = None
     mapping: dict[str, Node]
 
     @pyd.model_validator(mode='before')

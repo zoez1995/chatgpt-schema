@@ -2,7 +2,7 @@ from __future__ import annotations
 import pydantic as pyd
 from typing import Literal as Lit, Any
 from .config import Model, ModelName
-
+from .tool import Canvas
 
 class SystemMessage(Model):
     """
@@ -13,18 +13,20 @@ class SystemMessage(Model):
     parent: str
     role: Lit['system']
     name: None
-    author_metadata: None
+    author_metadata: SystemInitiated | None
     create_time: float | None
     update_time: None
     status: Lit['finished_successfully']
     end_turn: bool | None
     weight: float
-    recipient: Lit['all']
-    channel: None
+    recipient: Lit['all', 'assistant']
+    channel: None = None
     content: Content
     metadata: Metadata
     children: list[str]
 
+class SystemInitiated(Model):
+    is_system_initiated_conversation: Lit[True]
 
 class Content(Model):
     content_type: Lit['text']
@@ -46,7 +48,7 @@ class Metadata(Model):
     user_context_message_data: UserContextMessageData | None = None
     rebase_system_message: Lit[True] | None = None
     rebase_developer_message: Lit[True] | None = None
-    message_type: None = None
+    message_type: Lit['next', 'variant'] | None = None
     message_source: None = None
     model_slug: ModelName | None = None
     requested_model_slug: ModelName | None = None
@@ -58,7 +60,20 @@ class Metadata(Model):
     voice_mode_message: bool | None = None
     finish_details: FinishDetails | None = None
     gizmo_id: str | None = None
-    pad: Lit['AAAAAAAAAAAAAAAAAAA'] | None = None
+    pad: str | None = None
+    system_hints: list[str] | None = None
+    exclusive_key: str | None = None
+    canvas: Canvas | None = None
+    paragen_variants_info: ParagenVariants | None = None
+    citations: list[None] | None = None
+    content_references: list[None] | None = None
+
+class ParagenVariants(Model):
+    type: Lit['num_variants_in_stream']
+    num_variants_in_stream: int
+    display_treatment: Lit['skippable']
+    conversation_id: str | None = None
+
 
 
 class FinishDetails(Model):
@@ -70,6 +85,7 @@ class Attachment(Model):
     id: str
     name: str
     mimeType: str
+    fileSizeTokens: None = None
 
 
 class UserContextMessageData(Model):
