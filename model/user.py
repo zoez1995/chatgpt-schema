@@ -165,11 +165,13 @@ class Metadata(Model):
     user_context_message_data: UserContextMessageData | None = None
     is_user_system_message: bool | None = None
     dictation: bool | None = None
+    dictation_edited: bool | None = None
     selected_mcp_sources: list[None] | None = None
     real_time_audio_has_video: bool | None = None
     targeted_reply_label: str | None = None
     canvas: Canvas | None = None
     dalle: dict[str, Any] | None = None
+    
 
 
 

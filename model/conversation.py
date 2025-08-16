@@ -32,10 +32,12 @@ class Conversation(Model):
     conversation_origin: None = None
     voice: Lit['breeze','cove','maple','sol','ember','arbor','juniper','vale','spruce','glimmer'] | None = None
     async_status: int | None = None
-    disabled_tool_ids: list[Lit['canmore']] = None
+    disabled_tool_ids: list[Lit['canmore','gcal','gcontacts','gmail']] = None
     is_do_not_remember: Lit[False] | None = None
     memory_scope: Lit['global_enabled'] = None
     sugar_item_id: None = None
+    sugar_item_visible: bool | None = None
+    is_study_mode: bool | None = None
     mapping: dict[str, Node]
 
     @pyd.model_validator(mode='before')

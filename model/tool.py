@@ -20,7 +20,7 @@ class ToolMessage(Model):
     end_turn: bool | None
     weight: float
     recipient: Lit['all', 'assistant']
-    channel: Lit['commentary'] | None = None
+    channel: Lit['commentary', 'final'] | None = None
     content: Content
     metadata: Metadata
     children: list[str]
@@ -175,14 +175,18 @@ class ComputerOutputContent(Model):
     is_ephemeral: bool | None = None
 
 class ComputerOutputState(Model):
-    type: Lit['computer_initialize_state']
+    type: Lit['computer_initialize_state', 'browser_state']
     id: str
-    os_type: Lit['computer']
-    os_name: str
-    os_version: str
-    target_type: Lit['host']
+    os_type: Lit['computer'] | None = None
+    os_name: str | None = None
+    os_version: str | None = None
+    target_type: Lit['host'] | None = None
     target_name: str | None = None
-    installed_software: list[str]
+    installed_software: list[str] | None = None
+    title: str | None = None
+    dom: None = None
+    url: str | None = None
+
 
 
 type Content = Annotated[
@@ -234,7 +238,7 @@ class Metadata(Model):
     canvas: Canvas | None = None
     search_turns_count: int | None = None
     search_source: Lit['composer_auto', 'composer_search'] | None = None
-    client_reported_search_source: Lit['composer_auto', 'conversation_composer_web_icon', 'conversation_composer_previous_web_mode'] | None = None
+    client_reported_search_source: Lit['composer_auto', 'conversation_composer_web_icon', 'conversation_composer_previous_web_mode', 'composer_search'] | None = None
     async_task_title: str | None = None
     async_task_prompt: str | None = None
     async_task_type: Lit['research'] | None = None
@@ -252,6 +256,7 @@ class Metadata(Model):
     n7jupd_url: str | None = None
     n7jupd_urls: list[str] | None = None
     n7jupd_subtool: SubTool | None = None
+    n7jupd_v: N7Jupd | None = None
     clicked_from_url: None = None
     clicked_from_title: None = None
     connector_source: str | None = None
@@ -261,7 +266,16 @@ class Metadata(Model):
     citations: list[None] | None = None
     image_gen_title: str | None = None
     is_error: bool | None = None
+    reasoning_title: str | None = None
+    classifier_response: Lit['default'] | None = None
+    retrieval_turn_number: int | None = None
+    retrieval_file_index: int | None = None
 
+
+class N7Jupd(Model):
+    application: str | None = None
+    title: str | None = None
+    url: str | None = None
 
 
 class SubTool(Model):
@@ -326,14 +340,14 @@ type Visualization = Annotated[
 
 class Canvas(Model):
     textdoc_id: str | None = None
-    textdoc_type: Lit['document', 'code/python', 'code/sql', 'code/javascript', 'code/html'] | None = None
+    textdoc_type: Lit['document', 'code/python', 'code/sql', 'code/javascript', 'code/html', 'code/react'] | None = None
     version: int | None = None
     title: str | None = None
     create_source: Lit['model', 'system_hint_canvas'] | None = None
     from_version: int | None = None
     has_user_edit: bool | None = None
     textdoc_content_length: int | None = None
-    user_message_type: Lit['ask_chatgpt','accelerator'] | None = None
+    user_message_type: Lit['ask_chatgpt','accelerator', 'console'] | None = None
     selection_metadata: SelectionMetadata | None = None
     accelerator_metadata: AcceleratorMetadata | None = None
 

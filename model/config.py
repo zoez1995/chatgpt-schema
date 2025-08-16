@@ -90,6 +90,9 @@ type DefaultToolName = Lit[
     'web.search',
     'canmore.update_textdoc',
     'canmore.comment_textdoc',
+    'file_search',
+    'computer.do',
+    'computer.get',
 
 ]
 
@@ -108,6 +111,8 @@ type ModelName = Lit[
     'gpt-4o-canmore',
     'gpt-4o-mini',
     'gpt-4o-jawbone',
+    'gpt-5',
+    'gpt-5-thinking',
     'o1',
     'o1-mini',
     'o1-preview',

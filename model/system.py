@@ -49,7 +49,7 @@ class Metadata(Model):
     rebase_system_message: Lit[True] | None = None
     rebase_developer_message: Lit[True] | None = None
     message_type: Lit['next', 'variant'] | None = None
-    message_source: None = None
+    message_source: Lit['instant-query'] | None = None
     model_slug: ModelName | None = None
     requested_model_slug: ModelName | None = None
     default_model_slug: ModelName | None = None
@@ -67,6 +67,10 @@ class Metadata(Model):
     paragen_variants_info: ParagenVariants | None = None
     citations: list[None] | None = None
     content_references: list[None] | None = None
+    command: Lit['prompt'] | None = None
+    is_contextual_answers_system_message: bool | None = None
+    contextual_answers_message_type: Lit['sources_and_filters_prompt', 'identity_prompt'] | None = None
+
 
 class ParagenVariants(Model):
     type: Lit['num_variants_in_stream']

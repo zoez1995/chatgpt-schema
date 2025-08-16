@@ -137,7 +137,7 @@ class AuthorMetadata(Model):
 
 class Metadata(Model):
     model_slug: ModelName | None = None
-    message_type: Lit['next'] | None = None
+    message_type: Lit['next', 'variant'] | None = None
     timestamp_: Lit['absolute']
     message_locale: str | None = None
     default_model_slug: ModelName | None = None
@@ -186,6 +186,9 @@ class Metadata(Model):
     safety_plugin_status_code: int | None = None
     model_switcher_deny: list[ModelSwitcherDeny] | None = None
     message_source: None = None
+    classifier_response: Lit['default'] | None = None
+    skip_reasoning_title: Lit['Get a quick answer'] | None = None
+    reasoning_title: str | None = None
 
 
 class ModelSwitcherDeny(Model):
@@ -227,7 +230,7 @@ class SonicClassificationResult(Model):
 
 
 
-type ClassifierConfigName = Lit['sonic_force_pg_switcher_renderer_config','sonic_classifier_ev3']
+type ClassifierConfigName = Lit['sonic_force_pg_switcher_renderer_config','sonic_classifier_ev3', 'sonic_classifier_3cls_ev3', 'sonic_classifier_3cls_paid_v1_merge_ev3']
 
 
 class SearchQuery(Model):
